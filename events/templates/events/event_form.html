@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create/Update Event</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            width: 450px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        form input, form textarea, form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        form input {
+            background-color: #ecf0f1;
+        }
+
+        form input::placeholder {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        form textarea {
+            resize: none;
+            height: 100px;
+            background-color: #ecf0f1;
+        }
+
+        form textarea::placeholder {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #2ecc71;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .cancel-link {
+            text-align: center;
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .cancel-link:hover {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ form.instance.pk|yesno:"Update Event,Create Event" }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" placeholder="Enter event title" required>
+            
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" placeholder="MM/DD/YYYY" required>
+            
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Enter a brief event description"></textarea>
+            
+            <button type="submit">Save</button>
+        </form>
+        <a href="{% url 'events' %}" class="cancel-link">Cancel</a>
+    </div>
+</body>
+</html>

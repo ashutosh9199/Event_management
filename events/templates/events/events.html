@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1abc9c, #2ecc71);
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .action-links {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .action-links a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #3498db;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .action-links a:hover {
+            background-color: #2980b9;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .event-item {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .event-item h2 {
+            margin-bottom: 10px;
+        }
+
+        .event-item p {
+            margin: 5px 0;
+        }
+
+            .event-actions {
+                margin-top: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        
+            .event-actions a {
+                flex: 1 1 calc(33.33% - 10px); /* Adjust width dynamically for up to three buttons in a row */
+                text-align: center;
+                text-decoration: none;
+                color: #fff;
+                background-color: #e74c3c;
+                padding: 10px;
+                border-radius: 5px;
+                transition: all 0.3s ease;
+                font-size: 0.9rem;
+            }
+        
+            .event-actions a:hover {
+                background-color: #c0392b;
+            }
+        
+            @media (max-width: 600px) {
+                .event-actions a {
+                    flex: 1 1 100%; /* Stack buttons on smaller screens */
+                }
+            }
+        
+        .task-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .task-item h4 {
+            margin-bottom: 5px;
+        }
+
+        form {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            padding: 8px;
+            width: calc(100% - 20px);
+            border: 2px solid #fff;
+            border-radius: 5px;
+            background-color: #2ecc71;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Event Management Page</h1>
+        <div class="action-links">
+            <a href="{% url 'logout' %}">Logout</a>
+            <a href="{% url 'event_create' %}">Create New Event</a>
+        </div>
+        <ul>
+            {% for event in events %}
+                <li class="event-item">
+                    <h2>{{ event.title }}</h2>
+                    <p><strong>Description:</strong> {{ event.description }}</p>
+                    <p><strong>Date:</strong> {{ event.date }}</p>
+                    <div class="event-actions">
+                        <a href="{% url 'event_detail' event.pk %}">View Details</a>
+                        <a href="{% url 'event_update' event.pk %}">Edit</a>
+                        <a href="{% url 'event_delete' event.pk %}">Delete</a>
+                    </div>
+                    <h3>Tasks</h3>
+                    <ul>
+                        {% for task in event.tasks.all %}
+                            <li class="task-item">
+                                <h4>{{ task.title }}</h4>
+                                <p>{{ task.description }}</p>
+                                <p><strong>Assigned to:</strong> {{ task.assigned_to.name }}</p>
+                                <p><strong>Progress:</strong> {{ task.progress }}%</p>
+                                <form method="post" action="{% url 'attendee_create' event.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                                    <label for="attendee_name_{{ task.id }}">Name:</label>
+                                    <input type="text" name="name" id="attendee_name_{{ task.id }}" required>
+                                    <label for="attendee_email_{{ task.id }}">Email:</label>
+                                    <input type="email" name="email" id="attendee_email_{{ task.id }}" required>
+                                    <button type="submit">Add Attendee</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
